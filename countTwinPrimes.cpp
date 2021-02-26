@@ -38,33 +38,30 @@ bool checkPrime(int number)
 
 /*! twinPrimePrinter */
 /*! Using openmp, a specified amount of threads are created. A for loop increments through every number within the search range.
-    Each number is checked to be prime or not. Then the same number is checked to be a twin prime.
+    Each number is checked to be prime or not. Then the next number 2 away is checked to see if it is a twin prime.
     When accessing the variables a lock is used to ensure threads don't block each other. */
 
 int twinPrimePrinter(int range, int threadCount) 
 {
     int count = 0;
     set<int> twins;
-#pragma omp parallel for num_threads(threadCount)
+#pragma omp parallel for num_threads(threadCount) // Create Threads
         for (int i = 2; i < range; i++)
         {
-            if(checkPrime(i) == true) 
+            if(checkPrime(i) == true && checkPrime(i+2) == true) 
             {   
-                if(checkPrime(i+2) == true)
-                {
-                    #pragma omp atomic
+                    #pragma omp atomic // Only one thread can access variables at once
                     count+=2;
                     twins.insert(i);
                     twins.insert(i+2);
                     //std::cout << "(" << i << "," << (i+2) << ")";
-                }
             }
         }
 
-    cout << "Twin Primes; \n";
+    cout << "Twin Primes; \n"; // Print all twin primes found
     for(auto it = twins.begin(); it != twins.end(); it++)
     {
-        cout <<  (*it) << " , ";
+        std::cout <<  (*it) << " , ";
     }
     return count;
 }
@@ -81,9 +78,9 @@ int main()
     std::cout << "Enter number of threads: ";
     std::cin >> threadCount;
     auto start = chrono::steady_clock::now();// Start Clock
-    int count = twinPrimePrinter(input, threadCount);
+    int count = twinPrimePrinter(input, threadCount); // Calls twin prime counter, returns int
     auto end = chrono::steady_clock::now();// End Clock
     std::cout << "\nTime Taken: " << chrono::duration_cast<chrono::milliseconds>(end - start).count() << "ms";
-    std::cout << "\nTotal Number of Primes : " << count << "\n";
+    std::cout << "\nTotal Number Twin of Primes : " << count << "\n";
     return 0;
 }
