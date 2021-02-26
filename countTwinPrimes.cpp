@@ -1,13 +1,13 @@
-// Author: Alan Halpin
-// Title: Twin Prime Counter
-// Date: 26/02/2021
 /*
-This is a parallel program for counting twin primes less than n. A twin prime is 
-a pair of prime numbers with a gap of two between them.
+This work is licensed under the  Creative Commons Attribution-ShareAlike 4.0 International Licence.
+To view of this licence, visit http://creativecommons.org/licenses/by-sa/4.0/.
+*/
 
-E.G.
-(3,5),(5,7),(11,13),(17,19),(29,31) .... 
-
+/*! \class Twin Prime Counter
+    \brief  This is a parallel program for counting twin primes less than n. A twin prime is a pair of prime numbers with a gap of two between them. E.G.(3,5),(5,7),(11,13),(17,19),(29,31) .... 
+    \author Alan Halpin
+    \date 26/02/2021
+    \copyright Creative Commons Attribution-ShareAlike 4.0 International Licence 
 */
 
 #include <chrono> // for clock
@@ -17,7 +17,8 @@ E.G.
 
 using namespace std;
 
-static const int numOfThreads = 8;
+/*! checkPrime */
+/*! A simple boolean function to check if the number given is prime or not.*/
 
 bool checkPrime(int number) 
 {
@@ -34,6 +35,11 @@ bool checkPrime(int number)
         }
         return true; // Number is prime!
 }
+
+/*! twinPrimePrinter */
+/*! Using openmp, a specified amount of threads are created. A for loop increments through every number within the search range.
+    Each number is checked to be prime or not. Then the same number is checked to be a twin prime.
+    When accessing the variables a lock is used to ensure threads don't block each other. */
 
 int twinPrimePrinter(int range, int threadCount) 
 {
@@ -63,10 +69,12 @@ int twinPrimePrinter(int range, int threadCount)
     return count;
 }
 
+/*! main */
+/*! The main method, used to track time, take user input and call other methods.*/
+
 int main() 
 {
-    int input;
-    int threadCount;
+    int input, threadCount;
     std::cout << "Welcome to the twin prime counter!" << "\n";
     std::cout <<"Enter search range: ";
     std::cin >> input;
