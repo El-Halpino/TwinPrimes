@@ -46,19 +46,24 @@ int twinPrimePrinter(int range, int threadCount)
     int count = 0;
     set<int> twins;
 #pragma omp parallel for num_threads(threadCount) // Create Threads
-        for (int i = 2; i < range; i++)
+    for (int i = 2; i < range; i++)
+    {
+        //std::cout << omp_get_num_threads();
+        if(checkPrime(i) == true)
         {
-            if(checkPrime(i) == true && checkPrime(i+2) == true) 
+            count+=1;
+            if(checkPrime(i+2) == true) 
             {   
-                    #pragma omp atomic // Only one thread can access variables at once
-                    count+=2;
+                   #pragma omp critical// Only one thread can access variables at once
+                    {
                     twins.insert(i);
                     twins.insert(i+2);
                     //std::cout << "(" << i << "," << (i+2) << ")";
+                    } 
             }
         }
-
-    cout << "Twin Primes; \n"; // Print all twin primes found
+    }
+    cout << "\nTwin Primes; \n"; // Print all twin primes found
     for(auto it = twins.begin(); it != twins.end(); it++)
     {
         std::cout <<  (*it) << " , ";
@@ -81,6 +86,15 @@ int main()
     int count = twinPrimePrinter(input, threadCount); // Calls twin prime counter, returns int
     auto end = chrono::steady_clock::now();// End Clock
     std::cout << "\nTime Taken: " << chrono::duration_cast<chrono::milliseconds>(end - start).count() << "ms";
-    std::cout << "\nTotal Number Twin of Primes : " << count << "\n";
+    std::cout << "\nTotal Number of Primes : " << count << "\n";
+    
+    /* // Loop For Tests
+    for(int i=0; i<3; i++)
+    {
+        auto start = chrono::steady_clock::now();// Start Clock
+        twinPrimePrinter(1000000, 8);
+        auto end = chrono::steady_clock::now();// End Clock
+        std::cout << "\nTime Taken: " << chrono::duration_cast<chrono::milliseconds>(end - start).count() << "ms" << "\n";
+    } */
     return 0;
 }
